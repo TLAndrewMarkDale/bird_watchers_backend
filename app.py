@@ -55,7 +55,7 @@ def image_check():
         
     predictions = model.predict(img[None, ...])
     index = np.argmax(predictions)
-    prompt = PromptTemplate.from_template("You are answering questions about bird species. Tell me two truly random facts about a {bird}, keep the response to less than 150 words and don't number your responses. Do not include any special characters.")
+    prompt = PromptTemplate.from_template("You are answering questions about bird species. Tell me two truly random facts about a {bird}, keep the response to less than 150 words and don't number your responses. Do not include any special characters. Try to make them as interesting as possible, and actually random (I keep getting the same responses, over and over).")
     chat = ChatOpenAI(model='gpt-3.5-turbo', openai_api_key=key)
     llm_chain = LLMChain(prompt=prompt, llm=chat)
     response = llm_chain.invoke(classes[index])
