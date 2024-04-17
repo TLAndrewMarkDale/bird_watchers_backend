@@ -15,8 +15,8 @@ import os
 import re
 
 def text_clean(text):
-    text = re.sub(r'[\-]', '', text)
-    text = re.sub(r'[\s+]', ' ', text)
+    text = re.sub(r'[\-]\s+', '', text)
+    text = re.sub(r'\s+', ' ', text)
     text = text.strip()
     return text
 
