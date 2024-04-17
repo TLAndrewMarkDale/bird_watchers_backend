@@ -12,6 +12,13 @@ from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 import os
+import re
+
+def text_clean(text):
+    text = re.sub(r'[\-]', '', text)
+    text = re.sub(r'[\s+]', ' ', text)
+    text = text.strip()
+    return text
 
 classes = pickle.load(open("classes.pkl", "rb"))
 scientific_names = pickle.load(open("scientific_names.pkl", "rb"))
@@ -59,4 +66,4 @@ def image_check():
     chat = ChatOpenAI(model='gpt-3.5-turbo', openai_api_key=key)
     llm_chain = LLMChain(prompt=prompt, llm=chat)
     response = llm_chain.invoke(classes[index])
-    return jsonify({"result": classes[index], "scientific_name": scientific_names[index], "confidence": str(round(predictions[0][index] * 100, 2)) + "%", "fact": response['text']})
+    return jsonify({"result": classes[index], "scientific_name": scientific_names[index], "confidence": str(round(predictions[0][index] * 100, 2)) + "%", "fact": text_clean(response['text'])})
