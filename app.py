@@ -14,6 +14,7 @@ from langchain.chains import LLMChain
 import os
 
 classes = pickle.load(open("classes.pkl", "rb"))
+scientific_names = pickle.load(open("scientific_names.pkl", "rb"))
 model = load_model("bird_classifier_fin3.h5")
 key = os.getenv("OPENAI_API_KEY")
 app = Flask(__name__)
@@ -30,7 +31,6 @@ def image_check():
             img = Image.open(BytesIO(decoded_img)).convert("RGB")
             img = np.array(img)
             img = cv2.resize(img, (224, 224))
-            print(img.shape)
 
         # Base64 DATA
         elif "data:image/png;base64," in url:
@@ -39,7 +39,6 @@ def image_check():
             img = Image.open(BytesIO(decoded_img)).convert("RGB")
             img = np.array(img)
             img = cv2.resize(img, (224, 224))
-            print(img.shape)
 
         # Regular URL Form DATA
         else:
@@ -48,8 +47,7 @@ def image_check():
             img = np.array(img)
             img = cv2.resize(img, (224, 224))
     
-        print("model")
-        print(model.predict(img/255))
+
     # ----- SECTION 3 -----    
         result = "Image has been succesfully sent to the server."
     except Exception as e:
@@ -61,4 +59,4 @@ def image_check():
     chat = ChatOpenAI(model='gpt-3.5-turbo', openai_api_key=key)
     llm_chain = LLMChain(prompt=prompt, llm=chat)
     response = llm_chain.invoke(classes[index])
-    return jsonify({"result": classes[index], "confidence": str(round(predictions[0][index] * 100, 2)) + "%", "fact": response['text']})
+    return jsonify({"result": classes[index], "scientific_name": scientific_names[index], "confidence": str(round(predictions[0][index] * 100, 2)) + "%", "fact": response['text']})
